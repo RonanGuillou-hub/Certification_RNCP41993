@@ -76,6 +76,9 @@ Ordre de lecture conseillé : L1, L2, L3, puis les annexes en référence.
 - Checklist de conformité (14 exigences RGPD, CCPA, PCI-DSS)
 - Référentiel DAMA-DMBOK
 
+## Note sur l'usage de l'IA
+Un assistant d'IA générative a servi d'aide à la rédaction (orthographe, propositions de structure relues et modifiées, comparaison d'options, cohérence d'ensemble). Les choix, la sélection des besoins et la validation de chaque livrable relèvent de ma responsabilité.
+
 ## Statut
 
 Livrables de la version 1.0, remis pour l'évaluation du Bloc 1. Les chiffres du cas d'étude (utilisateurs, pays) datent de 2023 et proviennent du business case.
