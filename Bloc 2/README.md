@@ -36,6 +36,7 @@ Le projet répond à ce contexte en réunissant **trois systèmes de données** 
 | **Personnalisation et prévisions** | Lots Databricks sur Gold | Filtrage collaboratif (résultats servis via Redis), séries temporelles (résultats rendus à la BI) |
 | **Boucle de feedback** | API de collecte, Kafka (topic `fraud_labels`), Bronze | Vraies valeurs de fraude renvoyées par la banque émettrice, cible d'apprentissage du modèle |
 | **Orchestration** | Databricks Workflows | Traitements par lots, relances, dépendances |
+| **Infrastructure as Code** | Terraform | Réseau, bases, calcul, droits et espace Databricks décrits en code, mêmes environnements de test et de production |
 | **Entrée et supervision** | AWS WAF, API Gateway, CloudWatch | Filtrage, points d'entrée (paiement et collecte), alertes |
 | **Sécurité et gouvernance** | AWS KMS, IAM, Secrets Manager, Unity Catalog, CloudTrail | Chiffrement, accès, secrets, catalogue, audit |
 
@@ -85,7 +86,7 @@ flowchart LR
 | **L4** | [Architecture du pipeline](docs/D2_L4_Pipeline_donnees.docx) | Flux critique et secondaire, outbox, CDC, médaillon, boucle de feedback (étiquettes de fraude), orchestration, monitoring et reprise. |
 | **L5** | [Stratégie d'intégration du ML](docs/D2_L5_Strategie_ML.docx) | Variables chaudes et froides, 3 cas d'usage, boucle de feedback, déploiement, suivi, conformité des modèles. |
 | **L6** | [Sécurité et conformité](docs/D2_L6_Securite_conformite.docx) | Cadre réglementaire, chiffrement, clés et secrets, tokenisation, RBAC, audit, incidents (v2.0). |
-| **L7** | [Diagramme d'architecture complet](docs/D2_L7_Diagramme_architecture.docx) | Vue d'ensemble des 3 systèmes (banque émettrice comprise), tableau des 20 composants, vue simplifiée par zones. |
+| **L7** | [Diagramme d'architecture complet](docs/D2_L7_Diagramme_architecture.docx) | Vue d'ensemble des 3 systèmes (banque émettrice comprise), tableau des 20 composants, vue simplifiée par zones, industrialisation par Terraform. |
 | **L8** | [Requêtes SQL et NoSQL](docs/D2_L8_Requetes_SQL_NoSQL.docx) | 6 requêtes OLTP, 5 requêtes OLAP, 2 pipelines d'agrégation MongoDB/DocumentDB. |
 | **L9** | [Support de soutenance](docs/D2_L9_Soutenance_bloc2_v2.pdf) | 12 diapositives : besoin, architecture, vitesse, résilience, sécurité, IA, synthèse, et 3 annexes (choix techniques, architecture complète, flux). |
 
@@ -126,13 +127,14 @@ Ordre de lecture conseillé : la fiche de spécifications, L7 (vue d'ensemble), 
 ### L7 et L8 : vue d'ensemble et requêtes
 
 - Un diagramme complet (flux, technologies, légende des fraîcheurs) et un tableau de 20 composants, avec la sortie de chacun.
+- **Industrialisation.** L'infrastructure est décrite en code avec Terraform : un seul code crée les environnements de test et de production, les modifications sont relues avant application, les secrets n'y figurent jamais, et l'infrastructure se recrée à partir du code en cas de sinistre. Il s'agit d'une stratégie décrite : le dépôt ne contient pas de fichiers Terraform.
 - Des requêtes qui répondent à des questions métier : paiements bloqués, test de cartes, demandes d'effacement en retard, CA net par mois et pays, top marchands, segmentation par quartiles, sessions ressemblant à un bot, erreurs derrière les avis négatifs.
 
 ### L9 : soutenance
 
 - Un fil conducteur : payer en 100 ms, sans jamais perdre un paiement, tout en évitant la fraude.
 - Deux flux d'entrée vers le lakehouse (critique et secondaire), trois cas d'usage IA sur une même plateforme, et une synthèse qui relie chaque attente du business case à sa réponse.
-- Trois annexes : les choix techniques et leur justification, l'architecture complète, et le tableau des flux avec leur fraîcheur.
+- Trois annexes : les choix techniques et leur justification (industrialisation par Terraform comprise), l'architecture complète, et le tableau des flux avec leur fraîcheur.
 
 ## Correspondance avec les compétences du Bloc 2
 
@@ -142,14 +144,11 @@ Ordre de lecture conseillé : la fiche de spécifications, L7 (vue d'ensemble), 
 | Structurer les environnements (Data Lake, conteneurs, cache) | L4, L5, L7 |
 | Garantir la résilience et la haute disponibilité (failover, reprise) | L1, L4 (§5), L7 |
 | Mettre en place la sécurité (IAM, chiffrement, gestion des secrets) | L6 |
+| Industrialiser via Infrastructure as Code (Terraform) | L7, L9 (annexe 1) |
 | Documenter et coordonner les équipes techniques | Fiche de spécifications, rôles de gouvernance dans L5 et L6, soutenance L9 |
-
-<!-- À COMPLÉTER avant de pousser : lignes ci-dessous pour les compétences pas encore couvertes par un livrable
-| Spécifications techniques (CPU/GPU, stockage, réseau) | ... |
-| Arbitrage Cloud / On-premise / Hybride, IaaS / PaaS / Serverless | ... |
-| Industrialisation par Infrastructure as Code (Terraform) | ... |
-| Pilotage de l'efficience (FinOps / GreenOps) | ... |
--->
+| Spécifications techniques (CPU/GPU, stockage, réseau) | Oral |
+| Arbitrage Cloud / On-premise / Hybride, IaaS / PaaS / Serverless | Oral |
+| Pilotage de l'efficience (FinOps / GreenOps) | Oral |
 
 ## Sources et références
 
